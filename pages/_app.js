@@ -6,37 +6,48 @@ import Layout from "../components/Layout/Layout";
 
 import "../styles/external.css";
 import "../styles/globals.css";
+import { motion, AnimatePresence } from "framer-motion";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
-    <SessionProvider session={session}>
-      <Layout>
-        {process.env.NODE_ENV === "production" && (
-          <>
-            <Script
-              id="google-tag-manager"
-              strategy="afterInteractive"
-              src="https://www.googletagmanager.com/gtag/js?id=G-0GK7ZH57SK"
-            ></Script>
-            <Script id="google-analytics" strategy="afterInteractive">
-              {`window.dataLayer = window.dataLayer || []; function gtag()
+    <AnimatePresence>
+      <  motion.div
+        key={process.browser && window.location.href + window.location.pathname}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: .5 }}
+      >
+        <SessionProvider session={session}>
+          <Layout>
+            {process.env.NODE_ENV === "production" && (
+              <>
+                <Script
+                  id="google-tag-manager"
+                  strategy="afterInteractive"
+                  src="https://www.googletagmanager.com/gtag/js?id=G-0GK7ZH57SK"
+                ></Script>
+                <Script id="google-analytics" strategy="afterInteractive">
+                  {`window.dataLayer = window.dataLayer || []; function gtag()
                 {dataLayer.push(arguments)}
               gtag('js', new Date()); gtag('config', 'G-0GK7ZH57SK');
             `}
-            </Script>
-            <Script id="microsoft-clarity" strategy="afterInteractive">
-              {`(function(c,l,a,r,i,t,y){
+                </Script>
+                <Script id="microsoft-clarity" strategy="afterInteractive">
+                  {`(function(c,l,a,r,i,t,y){
         c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
         t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "fovtfnoy8f");`}
-            </Script>
-          </>
-        )}
-        <Component {...pageProps} />;
-        <Analytics />
-      </Layout>
-    </SessionProvider>
+                </Script>
+              </>
+            )}
+            <Component {...pageProps} />;
+            <Analytics />
+          </Layout>
+        </SessionProvider>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
